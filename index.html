@@ -3,20 +3,28 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Lab — Modulo</title>
+		<title>Titouan Mathis — Lab — Modulo</title>
+		<meta name="description" content="Lead front-end developper chez Studio Meta.">
 		<style>
-		html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; font: 0.875em/1.4 'FiraMono', monospace; }
+		html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; font: 0.9em/2 'FiraMono', monospace; }
 		canvas { display: block; }
+		input[type="range"] { vertical-align: middle; margin-bottom: 3px;}
 		.info { position: fixed; left: 1em; bottom: 1em; color: #555; }
+		.btn { margin-left: -10px; width: 27px; height: 27px; }
+		.play, .pause { fill: #555; }
+		.pause, .is-paused .play { display: block; }
+		.play, .is-paused .pause { display: none; }
 		</style>
 	</head>
 	<body>
 		<div class="info">
-			<b>dots&nbsp;&nbsp;:&nbsp;<span id="paramDots"></span></b><br>
-			<b>factor:&nbsp;<span id="paramFactor"></span></b><br>
-			<b>modulo:&nbsp;<span id="paramModulo"></span></b>
+			<b><span id="btn" class="btn"><svg width="36" height="36" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="pause" d="M 11 10 L 17 10 L 17 26 L 11 26 M 20 10 L 26 10 L 26 26 L 20 26"></path><path class="play" d="M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28"></path></svg></span></b><br>
+			<b>speed&nbsp;:&nbsp;<input min="1" max="10000" step="1" type="range" id="speedInput">&nbsp;<span id="speedText"></span></b><br>
+			<b>dots&nbsp;&nbsp;:&nbsp;<input min="1" max="1000" step="1" type="range" id="dotsInput">&nbsp;<span id="dotsText"></span></b><br>
+			<b>factor:&nbsp;<input min="1" max="1000" step="1" type="range" id="factorInput">&nbsp;<span id="factorText"></span><br>
+			<b>modulo:&nbsp;<input min="1" max="100" step="0,1" type="range" id="moduloInput">&nbsp;<span id="moduloText"></span></b>
 		</div>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.24/paper-full.min.js"></script>
-		<script src="./dist/js/app.js"></script>
+		<script defer src="./dist/js/app.js"></script>
 	</body>
 </html>

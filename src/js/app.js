@@ -5,11 +5,19 @@ var DAT = require('dat-gui');
 
 // Declare global variables
 var canvas, ctx, timeout,
-	dotsEl = document.getElementById('paramDots'),
-	factorEl = document.getElementById('paramFactor'),
-	moduloEl = document.getElementById('paramModulo'),
+	speedInput = document.getElementById('speedInput'),
+	dotsInput = document.getElementById('dotsInput'),
+	factorInput = document.getElementById('factorInput'),
+	moduloInput = document.getElementById('moduloInput'),
+	speedText = document.getElementById('speedText'),
+	dotsText = document.getElementById('dotsText'),
+	factorText = document.getElementById('factorText'),
+	moduloText = document.getElementById('moduloText'),
+	btn = document.getElementById('btn'),
 	dots = [],
 	lines = [],
+	timer,
+	isPlaying = true,
 	viewWidth = window.innerWidth,
 	viewHeight = window.innerHeight,
 	radius = viewWidth > viewHeight ? viewHeight/3 : viewWidth/3,
@@ -21,6 +29,7 @@ paper.install(window);
 
 // Some parameters
 var params = {
+	speed: 100,
 	dots: 100,
 	factor: 200,
 	modulo: 10
@@ -33,10 +42,9 @@ window.addEventListener('load', function() {
 	setup();
 
 	view.onFrame = function(e) {
-		params.modulo += e.delta/1000;
-		dotsEl.innerHTML = params.dots;
-		factorEl.innerHTML = params.factor;
-		moduloEl.innerHTML = Math.round(params.modulo*100000)/100000;
+		if (!isPlaying) return;
+		params.modulo += e.delta*(params.speed/1000000);
+		moduloInput.value = moduloText.innerHTML = Math.round(params.modulo*10000)/10000;
 		makeDots();
 	};
 });
@@ -50,6 +58,36 @@ function setup() {
 	canvas.width = viewWidth;
 	canvas.height = viewHeight;
 	document.body.appendChild(canvas);
+
+	btn.addEventListener('click', function() {
+		this.classList.toggle('is-paused');
+		isPlaying = !isPlaying;
+	});
+
+	speedInput.value = speedText.innerHTML = params.speed;
+	dotsInput.value = dotsText.innerHTML = params.dots;
+	factorInput.value = factorText.innerHTML = params.factor;
+	moduloInput.value = moduloText.innerHTML = params.modulo;
+
+	speedInput.addEventListener('input', function() {
+		params.speed = speedText.innerHTML = parseInt(this.value);
+		if (!isPlaying) makeDots();
+	});
+
+	dotsInput.addEventListener('input', function() {
+		params.dots = dotsText.innerHTML = parseInt(this.value);
+		if (!isPlaying) makeDots();
+	});
+
+	factorInput.addEventListener('input', function() {
+		params.factor = factorText.innerHTML = parseInt(this.value);
+		if (!isPlaying) makeDots();
+	});
+
+	moduloInput.addEventListener('input', function() {
+		params.modulo = moduloText.innerHTML = parseInt(this.value);
+		if (!isPlaying) makeDots();
+	});
 
 	paper.setup('canvas');
 }
@@ -70,8 +108,8 @@ function makeDots() {
 		for (var i = 0; i < dots.length; i++) dots[i].remove();
 	}
 
-	for (var i = 0; i < params.modulo; i++) {
-		var point = Math.circPos((-360/params.modulo*i)-90);
+	for (var i = 0; i < params.dots; i++) {
+		var point = Math.circPos((-360/params.dots*i)-90);
 		dot = new Path.Circle(new Point(point.x, point.y), 1);
 		dot.fillColor = 'black';
 		dot.opacity = 0.3;
