@@ -32,7 +32,7 @@ var params = {
 	speed: 100,
 	dots: 100,
 	factor: 200,
-	modulo: 10
+	modulo: 10.55555
 };
 
 
@@ -102,42 +102,77 @@ function setSize() {
 window.addEventListener('resize', setSize);
 
 function makeDots() {
-	var dot, point;
+	// var dot, point;
+
+	// if (dots.length) {
+	// 	for (var i = 0; i < dots.length; i++) dots[i].remove();
+	// }
+
+	// for (var i = 0; i < params.dots; i++) {
+	// 	var point = Math.circPos((-360/params.dots*i)-90);
+	// 	dot = new Path.Circle(new Point(point.x, point.y), 1);
+	// 	dot.fillColor = 'black';
+	// 	dot.opacity = 0.3;
+	// 	dots.push(dot);
+	// }
+
+	makeLines();
+}
+
+function makeLines() {
+	var line, result, from, to, point1, point2;
+
+	if (lines.length) {
+		for (var i = 0; i < lines.length; i++) lines[i].remove();
+	}
 
 	if (dots.length) {
 		for (var i = 0; i < dots.length; i++) dots[i].remove();
 	}
 
 	for (var i = 0; i < params.dots; i++) {
-		var point = Math.circPos((-360/params.dots*i)-90);
-		dot = new Path.Circle(new Point(point.x, point.y), 1);
-		dot.fillColor = 'black';
-		dot.opacity = 0.3;
-		dots.push(dot);
-	}
-
-	makeLines();
-}
-
-function makeLines() {
-	var line, result, from, to;
-
-	if (lines.length) {
-		for (var i = 0; i < lines.length; i++) lines[i].remove();
-	}
-
-	for (var i = 0; i < params.dots; i++) {
 		result = params.factor * i;
 
-		var p1 = Math.circPos((-360/params.modulo*i)-90);
-		var p2 = Math.circPos((-360/params.modulo*result)-90);
+		var dir = i % 2 ? -360 : 360;
+
+		var p1 = Math.circPos((dir/params.modulo*i)-90);
+		var p2 = Math.circPos((dir/params.modulo*result)-90);
+
+		p1.x = p1.x > (viewWidth/2 + 100) ? viewWidth/2 + 100 : p1.x;
+		p1.x = p1.x < (viewWidth/2 - 100) ? viewWidth/2 - 100 : p1.x;
+
+		p1.y = p1.y > (viewHeight/2 + 200) ? viewHeight/2 + 200 : p1.y;
+		p1.y = p1.y < (viewHeight/2 - 200) ? viewHeight/2 - 200 : p1.y;
+
+		// p2.x = p2.x > (viewWidth/2 + 100) ? viewWidth/2 + 100 : p2.x;
+		// p2.x = p2.x < (viewWidth/2 - 100) ? viewWidth/2 - 100 : p2.x;
+
+		// p2.x = p2.x === p1.x && p2.x > (viewWidth/2 - 100) ? viewWidth/2 - 100 : p2.x;
+		// p2.x = p2.x === p1.x && p2.x < (viewWidth/2 + 100) ? viewWidth/2 + 100 : p2.x;
+
+		// p2.y = p2.y > (viewHeight/2 + 220) ? viewHeight/2 + 220 : p2.y;
+		// p2.y = p2.y < (viewHeight/2 - 220) ? viewHeight/2 - 220 : p2.y;
+
+		// p2.y = p2.y === p1.y && p2.y > (viewHeight/2 + 220) ? viewHeight/2 - 220 : p2.y;
+		// p2.y = p2.y === p1.y && p2.y < (viewHeight/2 - 220) ? viewHeight/2 + 220 : p2.y;
 
 		from = new Point(p1.x, p1.y);
 		to = new Point(p2.x, p2.y);
+		point1 = new Path.Circle(from, 1);
+		point2 = new Path.Circle(to, 1);
+		// point1.strokeColor = point2.strokeColor = '#fff';
+		// point1.strokeWidth = point2.strokeWidth = 1.5;
+		point1.fillColor = point2.fillColor = '#222';
+		point1.opacity = point2.opacity = 0.5;
+		point1.bringToFront();
+		point2.bringToFront();
 		line = new Path.Line(from, to);
-		line.strokeColor = '#555';
-		line.opacity = 0.5;
+		line.strokeColor = '#222';
+		line.opacity = 0.2;
+		line.sendToBack();
 
+		dots.push(point1);
+		dots.push(point2);
 		lines.push(line);
 	}
 }
