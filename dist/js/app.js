@@ -4426,6 +4426,8 @@ var DAT = require('dat-gui');
 
 // Declare global variables
 var canvas, ctx, timeout,
+	circInput = document.getElementById('circInput'),
+	rectInput = document.getElementById('rectInput'),
 	speedInput = document.getElementById('speedInput'),
 	dotsInput = document.getElementById('dotsInput'),
 	factorInput = document.getElementById('factorInput'),
@@ -4450,8 +4452,9 @@ paper.install(window);
 
 // Some parameters
 var params = {
-	speed: 100,
-	dots: 100,
+	type: 'circ',
+	speed: 1000,
+	dots: 200,
 	factor: 200,
 	modulo: 10.55555
 };
@@ -4464,8 +4467,8 @@ window.addEventListener('load', function() {
 
 	view.onFrame = function(e) {
 		if (!isPlaying) return;
-		params.modulo += e.delta*(params.speed/1000000);
-		moduloInput.value = moduloText.innerHTML = Math.round(params.modulo*10000)/10000;
+		params.factor += e.delta*(params.speed/1000000);
+		factorInput.value = factorText.innerHTML = Math.round(params.factor*10000)/10000;
 		makeDots();
 	};
 });
@@ -4507,6 +4510,16 @@ function setup() {
 
 	moduloInput.addEventListener('input', function() {
 		params.modulo = moduloText.innerHTML = parseInt(this.value);
+		if (!isPlaying) makeDots();
+	});
+
+	circInput.addEventListener('change', function() {
+		params.type = 'circ';
+		if (!isPlaying) makeDots();
+	});
+
+	rectInput.addEventListener('change', function() {
+		params.type = 'rect';
 		if (!isPlaying) makeDots();
 	});
 
@@ -4559,20 +4572,49 @@ function makeLines() {
 		var p1 = Math.circPos((dir/params.modulo*i)-90);
 		var p2 = Math.circPos((dir/params.modulo*result)-90);
 
-		p1.x = p1.x > (viewWidth/2 + 100) ? viewWidth/2 + 100 : p1.x;
-		p1.x = p1.x < (viewWidth/2 - 100) ? viewWidth/2 - 100 : p1.x;
+		if (params.type === 'rect') {
+			var rectSize = {
+				xMax: viewWidth/2 + 125,
+				xMin: viewWidth/2 - 125,
+				yMax: viewHeight/2 + 225,
+				yMin: viewHeight/2 - 225
+			};
 
-		p1.y = p1.y > (viewHeight/2 + 200) ? viewHeight/2 + 200 : p1.y;
-		p1.y = p1.y < (viewHeight/2 - 200) ? viewHeight/2 - 200 : p1.y;
+			if (i % 2) {
 
-		// p2.x = p2.x > (viewWidth/2 + 100) ? viewWidth/2 + 100 : p2.x;
-		// p2.x = p2.x < (viewWidth/2 - 100) ? viewWidth/2 - 100 : p2.x;
+				p1.x = p1.x > rectSize.xMax ? rectSize.xMax : p1.x;
+				p1.x = p1.x < rectSize.xMin ? rectSize.xMin : p1.x;
+
+				p1.y = p1.y > rectSize.yMax ? rectSize.yMax : p1.y;
+				p1.y = p1.y < rectSize.yMin ? rectSize.yMin : p1.y;
+
+				p2.x = p2.x > rectSize.xMax + 40 ? rectSize.xMax + 40 : p2.x;
+				p2.x = p2.x < rectSize.xMin - 40 ? rectSize.xMin - 40 : p2.x;
+
+				p2.y = p2.y > rectSize.yMax + 40 ? rectSize.yMax + 40 : p2.y;
+				p2.y = p2.y < rectSize.yMin - 40 ? rectSize.yMin - 40 : p2.y;
+
+			} else {
+
+				p1.x = p1.x > rectSize.xMax + 40 ? rectSize.xMax + 40 : p1.x;
+				p1.x = p1.x < rectSize.xMin - 40 ? rectSize.xMin - 40 : p1.x;
+
+				p1.y = p1.y > rectSize.yMax + 40 ? rectSize.yMax + 40 : p1.y;
+				p1.y = p1.y < rectSize.yMin - 40 ? rectSize.yMin - 40 : p1.y;
+
+				p2.x = p2.x > rectSize.xMax ? rectSize.xMax : p2.x;
+				p2.x = p2.x < rectSize.xMin ? rectSize.xMin : p2.x;
+
+				p2.y = p2.y > rectSize.yMax ? rectSize.yMax : p2.y;
+				p2.y = p2.y < rectSize.yMin ? rectSize.yMin : p2.y;
+
+			}
+		}
 
 		// p2.x = p2.x === p1.x && p2.x > (viewWidth/2 - 100) ? viewWidth/2 - 100 : p2.x;
 		// p2.x = p2.x === p1.x && p2.x < (viewWidth/2 + 100) ? viewWidth/2 + 100 : p2.x;
 
-		// p2.y = p2.y > (viewHeight/2 + 220) ? viewHeight/2 + 220 : p2.y;
-		// p2.y = p2.y < (viewHeight/2 - 220) ? viewHeight/2 - 220 : p2.y;
+
 
 		// p2.y = p2.y === p1.y && p2.y > (viewHeight/2 + 220) ? viewHeight/2 - 220 : p2.y;
 		// p2.y = p2.y === p1.y && p2.y < (viewHeight/2 - 220) ? viewHeight/2 + 220 : p2.y;
